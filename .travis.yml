@@ -1,0 +1,17 @@
+language: go
+
+go:
+  - 1.15
+
+git:
+  submodules: false
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+        - echo "$DOCKER_KEY" | docker login -u json_key --password-stdin cr.yandex
+        - docker build -t boris-wtf-secret-service .
+        - docker tag boris-wtf-secret-service cr.yandex/"$DOCKER_REGISTRY_ID"/boris-wtf-secret-service:main
+        - docker images
+        - docker push cr.yandex/"$DOCKER_REGISTRY_ID"/boris-wtf-secret-service
